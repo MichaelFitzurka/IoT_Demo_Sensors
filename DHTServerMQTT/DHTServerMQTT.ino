@@ -7,6 +7,12 @@
 #include <DHT.h>
 #include <PubSubClient.h>
 
+
+extern "C" {
+#include "user_interface.h"
+uint16 readvdd33(void);
+}
+
 /************************* DHT22 Sensor *********************************/
 #define DHTTYPE DHT22
 #define DHTPIN  02
@@ -23,6 +29,7 @@ const char* mqtt_password   = "admin";
 String      message         = "";
 String      topicTemp       = "";
 String      topicHumid      = "";
+String      topicVoltage    = "";
 
 /************************* ESP8266 WiFiClient *********************************/
 WiFiClient wifiClient;
@@ -35,9 +42,12 @@ DHT dht(DHTPIN, DHTTYPE, 11);
 
 
 float         humidity, temp_f;           // Values read from sensor
+int           voltage;                    // ESP voltage
 
 unsigned long previousMillis = 0;         // will store last temp was read
 const long    interval = 2000;            // interval at which to read sensor
+
+unsigned long count = 0;                  // counter for messagepoints
 
 /*************not used yet, for subscription of messages ******************************/
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -65,7 +75,7 @@ void gettemperature() {
     // Reading temperature for humidity takes about 250 milliseconds!
     // Sensor readings may also be up to 2 seconds 'old' (it's a very slow sensor)
     humidity = dht.readHumidity();          // Read humidity (percent)
-    temp_f = dht.readTemperature(true);     // Read temperature as Fahrenheit
+    temp_f = dht.readTemperature();         // Read temperature as Celsius
     // Check if any reads failed and exit early (to try again).
     if (isnan(humidity) || isnan(temp_f)) {
       Serial.println("Failed to read from DHT sensor!");
@@ -83,6 +93,7 @@ void setup(void) {
   // Create String for MQTT Topics
   topicTemp       = "temperature/"+ String( ESP.getChipId() );
   topicHumid      = "humidity/"+ String( ESP.getChipId() );
+  topicVoltage    = "voltage/"+ String( ESP.getChipId() );
 
   Serial.print("Chip-ID =");
   Serial.print ( ESP.getChipId() );
@@ -135,18 +146,31 @@ void loop(void) {
   client.loop();
 
   gettemperature();           // read sensordata
+  count = count +1;           // increase counter
+
+  voltage = readvdd33();
 
   // Now we can publish stuff!
-  message = "<value>" + String((int)temp_f) + "</value>";
+  message = String((int)temp_f) + ", " + String(count);
 
-  Serial.print(F("\nSending temperature value "));
+  Serial.print(F("\nSending temperature value in Celsius <"));
   Serial.print(message);
+  Serial.print(">");
   client.publish(topicTemp.c_str(), message.c_str());
 
-  message = "<value>" + String((int)humidity) + "</value>";
-  Serial.print(F("\nSending humidity value "));
+  message = String((int)humidity) + ", " + String(count);
+
+  Serial.print(F("\nSending humidity value <"));
   Serial.print(message);
+  Serial.print(">");
   client.publish(topicHumid.c_str(), message.c_str());
+
+  message = String((int)voltage) + ", " + String(count);
+
+  Serial.print(F("\nSending sensor voltage <"));
+  Serial.print(message);
+  Serial.print(">");
+  client.publish(topicVoltage.c_str(), message.c_str());
 
   delay(1000);
 }
