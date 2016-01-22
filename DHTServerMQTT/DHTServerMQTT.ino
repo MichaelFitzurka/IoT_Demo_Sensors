@@ -18,14 +18,14 @@ uint16 readvdd33(void);
 #define DHTPIN  02
 
 /************************* WiFi Access Point *********************************/
-const char* ssid     = "Steiner_Keller";
-const char* password = "pat4president";
+const char* ssid     = "iotdemo";
+const char* password = "change12_me";
 
 /************************* MQTT Server *********************************/
-char* mqtt_server           = "192.168.178.80";
+char* mqtt_server           = "192.168.42.1";
 int mqtt_server_port        = 1883;
 const char* mqtt_user       = "admin";
-const char* mqtt_password   = "admin";
+const char* mqtt_password   = "change12_me";
 String      message         = "";
 String      topicTemp       = "";
 String      topicHumid      = "";
@@ -91,9 +91,9 @@ void setup(void) {
   dht.begin();
 
   // Create String for MQTT Topics
-  topicTemp       = "temperature/"+ String( ESP.getChipId() );
-  topicHumid      = "humidity/"+ String( ESP.getChipId() );
-  topicVoltage    = "voltage/"+ String( ESP.getChipId() );
+  topicTemp       = "iotdemo/temperature/"+ String( ESP.getChipId() );
+  topicHumid      = "iotdemo/humidity/"+ String( ESP.getChipId() );
+  topicVoltage    = "iotdemo/voltage/"+ String( ESP.getChipId() );
 
   Serial.print("Chip-ID =");
   Serial.print ( ESP.getChipId() );
@@ -120,7 +120,10 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection to ");
     Serial.print(mqtt_server);
-    Serial.print(" ");
+    Serial.print(" with ");
+    Serial.print(mqtt_user);
+    Serial.print(" / ");
+    Serial.print(mqtt_password);
 
     // Attempt to connect
     if (client.connect(mqtt_server, mqtt_user, mqtt_password)) {
