@@ -3,6 +3,9 @@
 *.lo
 *.o
 *.obj
+*.jar
+
+target
 
 # Precompiled Headers
 *.gch
