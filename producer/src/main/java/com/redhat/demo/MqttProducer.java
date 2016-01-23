@@ -26,8 +26,8 @@ public class MqttProducer extends Producer {
 		}
 		
 		options = new MqttConnectOptions ();
-		options.setUserName("admin");
-		options.setPassword("admin".toCharArray());
+		options.setUserName(user);
+		options.setPassword("change12_me".toCharArray());
 		
 		try {
 			client.connect(options);
@@ -47,12 +47,14 @@ public class MqttProducer extends Producer {
 		
 		message.setPayload(data.getBytes());
 		
-		client.publish("iotdemo/receiver/sensors", message);
+		System.out.println("Publishing " + message.getPayload());
+		
+		client.publish("iotdemocommand/light", message);
 		
 	}
 	
 	public void close() throws MqttException{
-		
+		client.disconnect();
 		client.close();
 		
 	}

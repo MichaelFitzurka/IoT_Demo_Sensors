@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <PubSubClient.h>
+#include <string.h>
 
 /************************* WiFi Access Point *********************************/
 const char* ssid     = "iotdemo";
@@ -20,17 +21,29 @@ void callback(char* topic, byte* payload, unsigned int length);
 PubSubClient client(mqtt_server, mqtt_server_port, callback, wifiClient);
 
 void lightOn() {
-  digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
-                                    // but actually the LED is on; this is because 
-                                    // it is acive low on the ESP-01)
+  digitalWrite(5, HIGH); 
 }
 
 void lightOff() {
- digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH 
+ digitalWrite(5, LOW);  
 }
 
+void blink(int count) {
+  for(unsigned i = 1; i <= count; ++i) {
+      lightOn();
+      delay(500);
+      lightOff();
+      delay(500);
+  }
+}
 
 void setup() {
+  Serial.begin(115200);
+  
+  pinMode(5, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+  
+  lightOff();
+  
   // Connect to WiFi network
   WiFi.begin(ssid, password);
   Serial.print("\n\r \n\rConnecting to ");
@@ -45,21 +58,20 @@ void setup() {
   Serial.println("\n\rESP8266 lightswitch working!");
   Serial.print("\n\rIP address: ");
   Serial.println(WiFi.localIP());
-  
-  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
 }
 
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  char message[11];
+  String text = ((char*)payload);
   
-  memcpy(message, payload, sizeof payload);
-  
-  Serial.println("Received some data on topic");
-  Serial.println(topic);
-  Serial.println("Message received");
-  Serial.println(message);
-  
+  if ( strstr((char*)payload,"an") != NULL ) {
+    Serial.println("an");
+    lightOn();
+  } else if ( strstr((char*)payload,"aus") != NULL ) {
+    Serial.println("aus");
+    lightOff() ;
+  } else
+    blink(10);
 }
 
 /******* Utility function to connect or re-connect to MQTT-Server ********************/
@@ -95,10 +107,10 @@ void reconnect() {
 
 // the loop function runs over and over again forever
 void loop() {
+  
   if (!client.connected()) {  // Connect to mqtt broker
-    reconnect();
+     reconnect();
   }
   client.loop();
 
-  
 }

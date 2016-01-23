@@ -13,7 +13,7 @@ public class App
 {
 	
 	// Default Values for message producer
-    private static final String DEFAULT_RECEIVER	= "localhost";
+    private static final String DEFAULT_RECEIVER	= "192.168.178.103";
  
 	 
     public static void main( String[] args ) throws Exception
@@ -23,9 +23,9 @@ public class App
        
         String brokerURLMQTT = "tcp://" + System.getProperty("receiverURL",DEFAULT_RECEIVER) +  ":1883";
                	
-    	producer = new MqttProducer(brokerURLMQTT, "admin", "admin", "mqtt.receiver");
+    	producer = new MqttProducer(brokerURLMQTT, "admin", "change12_me", "mqtt.receiver");
         
- 		producer.run( "an" );
+ 		producer.run( "aus" );
 		    
         producer.close();
     }
