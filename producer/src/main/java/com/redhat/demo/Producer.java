@@ -10,7 +10,7 @@ public class Producer {
 		// TODO Auto-generated constructor stub
 	}
 	
-	 public void run(String data) throws Exception {
+	 public void run(String mqttTopic, String mqttMessage) throws Exception {
 		 
 	 }
 

@@ -41,15 +41,15 @@ public class MqttProducer extends Producer {
 		
 	}
 	
-	public void run(String data) throws MqttPersistenceException, MqttException {
+	public void run(String mqttTopic, String mqttMessage) throws MqttPersistenceException, MqttException {
 		
 		MqttMessage message = new MqttMessage();
 		
-		message.setPayload(data.getBytes());
+		message.setPayload(mqttMessage.getBytes());
 		
 		System.out.println("Publishing " + message.getPayload());
 		
-		client.publish("iotdemocommand/light", message);
+		client.publish(mqttTopic, message);
 		
 	}
 	
