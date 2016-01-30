@@ -34,11 +34,11 @@ uint16 readvdd33(void);
 
 
 void lightOn() {
-  digitalWrite(5, HIGH); 
+  digitalWrite(BUILTIN_LED, LOW); 
 }
 
 void lightOff() {
- digitalWrite(5, LOW);  
+ digitalWrite(BUILTIN_LED, HIGH);  
 }
 
 void blink(int count) {
@@ -53,7 +53,7 @@ void blink(int count) {
 void setup() {
   Serial.begin(115200);
   
-  pinMode(5, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
   
   lightOff();
 
@@ -133,10 +133,10 @@ void loop() {
   count   = count +1;           // increase counter
   message = String((int)voltage) + ", " + String(count);
 
-  Serial.print(F("\nSending sensor voltage <"));
-  Serial.print(message);
-  Serial.print(">");
-  client.publish(topicVoltage.c_str(), message.c_str());
+  // Serial.print(F("\nSending sensor voltage <"));
+  // Serial.print(message);
+  // Serial.print(">");
+  // client.publish(topicVoltage.c_str(), message.c_str());
 
   delay(1000);
 }

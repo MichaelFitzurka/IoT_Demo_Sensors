@@ -18,6 +18,8 @@ public class MqttProducer extends Producer {
 	
 		// MemoryPersistence persistence = new MemoryPersistence();
 		
+		System.out.println("Connecting to "+brokerURL);
+		
 		try {
 			client = new MqttClient(brokerURL, "mqtt.temp.receiver");
 		} catch (MqttException e) {

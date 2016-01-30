@@ -1,8 +1,15 @@
 #!/bin/bash
 
+export receiverURL="192.168.178.103"
+# export mqttTopic="iotdemo/voltage/4711"
+export mqttTopic="iotdemocommand/light"
+# export mqttMessage="1999,1"
+export mqttMessage="an"
 
-export mqttTopic="iotdemo/voltage/4711"
-export mqttMessage="1999,1"
+if [ $# -eq 1 ]
+  then
+    export mqttMessage=$1
+fi
 
 echo "Starting the producer to send messages "
-java  -DmqttTopic=$mqttTopic -DmqttMessage=$mqttMessage -jar producer/target/iot_producer-jar-with-dependencies.jar
+java -DreceiverURL=$receiverURL -DmqttTopic=$mqttTopic -DmqttMessage=$mqttMessage -jar producer/target/iot_producer-jar-with-dependencies.jar
