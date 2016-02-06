@@ -3,7 +3,7 @@
 export receiverURL="192.168.42.1"
 export mqttTopic="iotdemo/voltage/4711"
 # export mqttTopic="iotdemocommand/light"
-export mqttMessage="1999,1"
+export mqttMessage="2999,1"
 # export mqttMessage="an"
 
 if [ $# -eq 1 ]
