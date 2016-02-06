@@ -21,7 +21,7 @@ Red Hat JBoss products, each taking over an important part in the IoT landscape
 
 image::./pictures/iot.png[]
 
-== Sensors & Actors622157
+== Sensors & Actors
 For this demo-setup, I decided to build physical sensors and actors, based on the ESP8266
 microprocessor and various sensors. The documentation on how to build such a sensor can be found
 http://www.opensourcerers.org/esp8266-and-dht22-based-smart-sensor/[in my blog]
