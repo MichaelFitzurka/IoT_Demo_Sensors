@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export receiverURL="192.168.42.1"
+export receiverURL="192.168.178.103"
 # export mqttTopic="iotdemo/voltage/4711"
 export mqttTopic="iotdemocommand/light"
 # export mqttMessage="1999,1"

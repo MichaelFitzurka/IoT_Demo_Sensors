@@ -15,7 +15,7 @@ uint16 readvdd33(void);
 
 /************************* DHT22 Sensor *********************************/
 #define DHTTYPE DHT22
-#define DHTPIN  02
+#define DHTPIN  12
 
 /************************* WiFi Access Point *********************************/
 const char* ssid     = "iotdemo";
@@ -34,8 +34,12 @@ String      topicVoltage    = "";
 /************************* ESP8266 WiFiClient *********************************/
 WiFiClient wifiClient;
 
+/************************* Prototypes *********************************/
+void callback(char* topic, byte* payload, unsigned int length);
+
+
 /************************* MQTT client *********************************/
-PubSubClient client(mqtt_server, mqtt_server_port, wifiClient );
+PubSubClient client(mqtt_server, mqtt_server_port, callback, wifiClient );
 
 /************************* DHT Sensor *********************************/
 DHT dht(DHTPIN, DHTTYPE, 11);
@@ -49,15 +53,34 @@ const long    interval = 2000;            // interval at which to read sensor
 
 unsigned long count = 0;                  // counter for messagepoints
 
-/*************not used yet, for subscription of messages ******************************/
-void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
+void lightOn() {
+  digitalWrite(BUILTIN_LED, LOW); 
+}
+
+void lightOff() {
+ digitalWrite(BUILTIN_LED, HIGH);  
+}
+
+void blink(int count) {
+  for(unsigned i = 1; i <= count; ++i) {
+      lightOn();
+      delay(500);
+      lightOff();
+      delay(500);
   }
-  Serial.println();
+}
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  String text = ((char*)payload);
+  
+  if ( strstr((char*)payload,"an") != NULL ) {
+    Serial.println("an");
+    lightOn();
+  } else if ( strstr((char*)payload,"aus") != NULL ) {
+    Serial.println("aus");
+    lightOff() ;
+  } else
+    blink(10);
 }
 
 /************* Utility function to retrieve data from DHT22 ******************************/
@@ -88,6 +111,11 @@ void gettemperature() {
 void setup(void) {
 
   Serial.begin(115200);
+
+  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+
+  lightOff();                       // Turn off LED
+  
   dht.begin();
 
   // Create String for MQTT Topics
@@ -128,6 +156,12 @@ void reconnect() {
     // Attempt to connect
     if (client.connect(mqtt_server, mqtt_user, mqtt_password)) {
       Serial.println("connected");
+
+      // subscribe to topic
+      if (client.subscribe("iotdemocommand/light")){
+        Serial.println("Successfully subscribed");
+      }
+      
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
