@@ -1,9 +1,9 @@
 #!/bin/bash
 
-export receiverURL="192.168.178.103"
+export receiverURL="localhost"
 export mqttTopic="iotdemo/temperature/4711"
 # export mqttTopic="iotdemocommand/light"
-export mqttMessage="30,0"
+export mqttMessage="30,1"
 # export mqttMessage="an"
 
 if [ $# -eq 1 ]

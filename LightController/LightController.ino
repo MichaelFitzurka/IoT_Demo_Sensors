@@ -34,11 +34,11 @@ uint16 readvdd33(void);
 
 
 void lightOn() {
-  digitalWrite(BUILTIN_LED, LOW); 
+  digitalWrite(5, LOW); 
 }
 
 void lightOff() {
- digitalWrite(BUILTIN_LED, HIGH);  
+ digitalWrite(5, HIGH);  
 }
 
 void blink(int count) {
@@ -52,8 +52,8 @@ void blink(int count) {
 
 void setup() {
   Serial.begin(115200);
-  
-  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+
+  pinMode(5, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
   
   lightOff();
 
@@ -86,8 +86,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
   } else if ( strstr((char*)payload,"aus") != NULL ) {
     Serial.println("aus");
     lightOff() ;
-  } else
-    blink(10);
+  } else {
+    Serial.println("aus");
+    lightOff() ;
+  }
 }
 
 /******* Utility function to connect or re-connect to MQTT-Server ********************/
@@ -102,9 +104,7 @@ void reconnect() {
     Serial.print(mqtt_password);
 
     // Attempt to connect
-    if (client.connect(mqtt_server, mqtt_user, mqtt_password)) {
-      Serial.println("connected");
-
+    if (client.connect(String( ESP.getChipId() ).c_str(), mqtt_user, mqtt_password)) {
       // subscribe to topic
       if (client.subscribe("iotdemocommand/light")){
         Serial.println("Successfully subscribed");

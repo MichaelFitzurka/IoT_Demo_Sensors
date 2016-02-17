@@ -78,9 +78,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
     lightOn();
   } else if ( strstr((char*)payload,"aus") != NULL ) {
     Serial.println("aus");
-    lightOff() ;
+    lightOff();
   } else
-    blink(10);
+    lightOff();
 }
 
 /************* Utility function to retrieve data from DHT22 ******************************/
@@ -154,7 +154,7 @@ void reconnect() {
     Serial.print(mqtt_password);
 
     // Attempt to connect
-    if (client.connect(mqtt_server, mqtt_user, mqtt_password)) {
+    if (client.connect(String( ESP.getChipId() ).c_str(), mqtt_user, mqtt_password)) {
       Serial.println("connected");
 
       // subscribe to topic
@@ -183,8 +183,7 @@ void loop(void) {
   client.loop();
 
   gettemperature();           // read sensordata
-  count = count +1;           // increase counter
-
+ 
   voltage = readvdd33();
 
   // Now we can publish stuff!
@@ -208,6 +207,8 @@ void loop(void) {
   Serial.print(message);
   Serial.print(">");
   client.publish(topicVoltage.c_str(), message.c_str());
+
+  count = count +1;           // increase counter
 
   delay(1000);
 }
