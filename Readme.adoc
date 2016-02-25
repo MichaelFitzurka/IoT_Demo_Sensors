@@ -19,7 +19,7 @@ Internet of Things ( IoT ) demo-environment, based on the 3-Layered architecture
 These layers can - and in this demo will - be made out of a set of
 Red Hat JBoss products, each taking over an important part in the IoT landscape
 
-image::./pictures/iot.png[]
+image::./pictures/Overview.png[]
 
 == Sensors & Actors
 For this demo-setup, I decided to build physical sensors and actors, based on the ESP8266
@@ -53,4 +53,4 @@ a network in the 192.168.42.0 subnet with 192.168.42.1 being the ip-address of
 the MQTT broker to which the sensors connect.
 
 If you should need instructions on how to adapt this to your needs, please let
-me know by creating an https://github.com/PatrickSteiner/IoT_Demo_Sensors/issues[issue]. 
+me know by creating an https://github.com/PatrickSteiner/IoT_Demo_Sensors/issues[issue].
